@@ -1,29 +1,7 @@
 <?php
 
-class EventDispatcher
-{
-    /**
-     * @var array<string, array<int, callable>>
-     */
-    private array $listeners = [];
-
-    public function addListener(string $eventName, callable $listener): void
-    {
-        $this->listeners[$eventName][] = $listener;
-    }
-
-    public function dispatch(object $event, ?string $eventName = null): object
-    {
-        $eventName ??= $event::class;
-        //$eventName = $eventName === null ? $event::class : $eventName;
-
-        foreach ($this->listeners[$eventName] as $listener) {
-            $listener($event);
-        }
-
-        return $event;
-    }
-}
+require_once __DIR__.'/EventListenerInterface.php';
+require_once __DIR__.'/EventDispatcher.php';
 
 $dispatcher = new EventDispatcher();
 $dispatcher->addListener('foo', static function (object $event) {
