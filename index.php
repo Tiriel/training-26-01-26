@@ -11,4 +11,8 @@ $dispatcher->addListener('foo', static function (object $event) {
 $event = new stdClass();
 $event->foo = 'bar';
 
-$dispatcher->dispatch($event, 'foo');
+try {
+    $dispatcher->dispatch($event, 'bar');
+} catch (\InvalidArgumentException $e) {
+    echo $e->getMessage().\PHP_EOL;
+}
