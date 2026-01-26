@@ -1,7 +1,8 @@
 <?php
 
-require_once __DIR__.'/EventListenerInterface.php';
-require_once __DIR__.'/EventDispatcher.php';
+use App\EventDispatcher;
+
+require_once __DIR__.'/vendor/autoload.php';
 
 $dispatcher = new EventDispatcher();
 $dispatcher->addListener('foo', static function (object $event) {
