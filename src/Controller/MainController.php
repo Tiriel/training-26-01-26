@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Bridge\Twig\Attribute\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,12 +17,18 @@ class MainController extends AbstractController
     {
         $name = $request->query->getString('name', 'World');
 
-        return new Response(sprintf("<html><body><h1>Hello %s!</h1></body></html>", $name));
+        return $this->render('main/index.html.twig', ['name' => $name]);
     }
+
+    //#[Route('/contact', name: 'app_main_contact', methods: ['GET'])]
+    //#[Template('main/contact.html.twig')]
+    //public function contact(): void
+    //{
+    //}
 
     #[Route('/contact', name: 'app_main_contact', methods: ['GET'])]
     public function contact(): Response
     {
-        return new Response('Contact');
+        return $this->render('main/contact.html.twig');
     }
 }
