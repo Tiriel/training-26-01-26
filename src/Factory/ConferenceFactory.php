@@ -53,8 +53,8 @@ final class ConferenceFactory extends PersistentObjectFactory
                 $conference
                     ->setEndAt(
                         \DateTimeImmutable::createFromMutable(self::faker()->dateTimeBetween(
-                            $conference->getStartAt()->format(\DateTimeInterface::ATOM),
-                            $conference->getStartAt()->format(\DateTimeInterface::ATOM).' +2 days'
+                            $conference->getStartAt()->format('Y-m-d'),
+                            $conference->getStartAt()->format('Y-m-d').' +2 days'
                         ))
                     );
             })

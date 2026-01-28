@@ -2,13 +2,13 @@
 
 namespace App\Factory;
 
-use App\Entity\Volunteering;
+use App\Entity\User;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<Volunteering>
+ * @extends PersistentObjectFactory<User>
  */
-final class VolunteeringFactory extends PersistentObjectFactory
+final class UserFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -22,7 +22,7 @@ final class VolunteeringFactory extends PersistentObjectFactory
     #[\Override]
     public static function class(): string
     {
-        return Volunteering::class;
+        return User::class;
     }
 
     /**
@@ -34,10 +34,9 @@ final class VolunteeringFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'conference' => ConferenceFactory::new(),
-            'endAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'forUser' => UserFactory::new(),
-            'startAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+            'email' => self::faker()->text(180),
+            'password' => self::faker()->text(),
+            'roles' => [],
         ];
     }
 
@@ -48,7 +47,7 @@ final class VolunteeringFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Volunteering $volunteering): void {})
+            // ->afterInstantiate(function(User $user): void {})
         ;
     }
 }
