@@ -3,8 +3,10 @@
 namespace App\Search\Client;
 
 use App\Search\Interface\ConferenceSearchInterface;
+use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+#[AsAlias]
 class ApiConferenceSearch implements ConferenceSearchInterface
 {
     public function __construct(

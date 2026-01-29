@@ -4,9 +4,7 @@ namespace App\Search\Database;
 
 use App\Repository\ConferenceRepository;
 use App\Search\Interface\ConferenceSearchInterface;
-use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 
-#[AsAlias]
 class DatabaseConferenceSearch implements ConferenceSearchInterface
 {
     public function __construct(
