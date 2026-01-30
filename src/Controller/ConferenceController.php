@@ -27,7 +27,9 @@ class ConferenceController extends AbstractController
     public function newConference(?Conference $conference, Request $request, ConferenceFormHandler $handler): Response
     {
         $conference ??= new Conference();
-        if (null !== $conference->getId()) {
+        if (null === $conference->getId()) {
+            $this->denyAccessUnlessGranted(new Expression("is_granted('ROLE_ORGANIZER') or is_granted('ROLE_WEBSITE')"));
+        } else {
             $this->denyAccessUnlessGranted(Attributes::EDIT_CONFERENCE, $conference);
         }
 

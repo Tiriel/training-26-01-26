@@ -33,12 +33,7 @@ final class VolunteeringFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-        return [
-            'conference' => ConferenceFactory::new(),
-            'endAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'forUser' => UserFactory::new(),
-            'startAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-        ];
+        return [];
     }
 
     /**
@@ -48,7 +43,15 @@ final class VolunteeringFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Volunteering $volunteering): void {})
+            ->afterInstantiate(function(Volunteering $volunteering): void {
+                $conference = ConferenceFactory::random();
+                $volunteering
+                    ->setConference($conference)
+                    ->setForUser(UserFactory::randomOrCreate())
+                    ->setStartAt($conference->getStartAt())
+                    ->setEndAt($conference->getEndAt())
+                    ;
+            })
         ;
     }
 }

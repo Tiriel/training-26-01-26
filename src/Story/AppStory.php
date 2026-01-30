@@ -4,6 +4,7 @@ namespace App\Story;
 
 use App\Factory\ConferenceFactory;
 use App\Factory\UserFactory;
+use App\Factory\VolunteeringFactory;
 use Zenstruck\Foundry\Attribute\AsFixture;
 use Zenstruck\Foundry\Story;
 
@@ -28,6 +29,8 @@ final class AppStory extends Story
             ->email('admin@sensioevents.com')
             ->roles('ROLE_ADMIN')
             ->create();
-        ConferenceFactory::createMany(20);
+        UserFactory::createMany(6);
+        ConferenceFactory::createMany(40);
+        VolunteeringFactory::createMany(30);
     }
 }

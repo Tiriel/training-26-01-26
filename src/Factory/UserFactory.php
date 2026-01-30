@@ -53,7 +53,7 @@ final class UserFactory extends PersistentObjectFactory
     {
         return [
             'email' => self::faker()->email(),
-            'roles' => self::faker()->randomElement(['ROLE_USER', 'ROLE_WEBSITE', 'ROLE_VOLUNTEER']),
+            'roles' => [self::faker()->randomElement(['ROLE_USER', 'ROLE_WEBSITE', 'ROLE_VOLUNTEER'])],
         ];
     }
 
