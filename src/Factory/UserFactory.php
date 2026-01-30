@@ -66,7 +66,9 @@ final class UserFactory extends PersistentObjectFactory
         return $this
             ->afterInstantiate(function(User $user): void {
                 $user
-                    ->setPassword($this->hasher->hashPassword($user, $this->defaultPassword));
+                    ->setPassword($this->hasher->hashPassword($user, $this->defaultPassword))
+                    ->setApikey()
+                ;
             })
         ;
     }

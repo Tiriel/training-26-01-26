@@ -23,6 +23,11 @@ security:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+        api:
+            pattern: ^/api
+            stateless: true
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
         main:
             lazy: true
             provider: app_user_provider
@@ -34,6 +39,7 @@ security:
                 path: app_logout
                 # where to redirect after logout
                 # target: app_any_route
+
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
