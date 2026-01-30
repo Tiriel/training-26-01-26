@@ -6,9 +6,11 @@ namespace App\Controller;
 
 use App\Entity\Conference;
 use App\Form\ConferenceType;
+use App\Form\Handler\ConferenceFormHandler;
 use App\Search\Database\DatabaseConferenceSearch;
 use App\Search\Interface\ConferenceSearchInterface;
 use App\Search\Provider\ConferenceProvider;
+use App\Security\Voter\Attributes;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\ExpressionLanguage\Expression;
@@ -19,26 +21,17 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ConferenceController extends AbstractController
 {
-    #[IsGranted(new Expression("is_granted('ROLE_ORGANIZER') or is_granted('ROLE_WEBSITE')"))]
+    //#[IsGranted(new Expression("is_granted('ROLE_ORGANIZER') or is_granted('ROLE_WEBSITE')"))]
     #[Route('/conference/new', name: 'app_conference_new', methods: ['GET', 'POST'])]
     #[Route('/conference/{id}/edit', name: 'app_conference_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    public function newConference(?Conference $conference, Request $request, EntityManagerInterface $manager): Response
+    public function newConference(?Conference $conference, Request $request, ConferenceFormHandler $handler): Response
     {
         $conference ??= new Conference();
-        $form = $this->createForm(ConferenceType::class, $conference);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->persist($conference);
-            $manager->flush();
-
-            return $this->redirectToRoute('app_conference_show', ['id' => $conference->getId()]);
+        if (null !== $conference->getId()) {
+            $this->denyAccessUnlessGranted(Attributes::EDIT_CONFERENCE, $conference);
         }
 
-        return $this->render('conference/new.html.twig', [
-            'form' => $form,
-            'conference' => $conference,
-        ]);
+        return $handler->handle($request, $conference);
     }
 
     #[Route('/conference', name: 'app_conference_list', methods: ['GET'])]
