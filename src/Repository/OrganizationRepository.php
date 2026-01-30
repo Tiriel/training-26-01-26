@@ -16,6 +16,15 @@ class OrganizationRepository extends ServiceEntityRepository
         parent::__construct($registry, Organization::class);
     }
 
+    public function save(Organization $organization, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($organization);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
     //    /**
     //     * @return Organization[] Returns an array of Organization objects
     //     */

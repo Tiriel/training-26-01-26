@@ -39,6 +39,9 @@
             <a href="{{ path('app_volunteering_new', {'conference': conference.id}) }}">
                 <button class="btn text-white" style="background-color: limegreen;">Volunteer on this event</button>
             </a>
+            <a href="{{ path('app_conference_edit', {id: conference.id}) }}">
+                <button class="btn btn-warning" style="border-color: limegreen;">Edit</button>
+            </a>
             <a href="{{ path('app_conference_list') }}">
                 <button class="btn text-black bg-white" style="border-color: limegreen;">Back</button>
             </a>

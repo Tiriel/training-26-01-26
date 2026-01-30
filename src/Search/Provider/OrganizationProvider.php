@@ -15,8 +15,14 @@ class OrganizationProvider implements ProviderInterface
 
     public function get(array $data): object
     {
-        return $this->repository->findOneBy(['name' => $data['name']])
+        $organization =  $this->repository->findOneBy(['name' => $data['name']])
             ?? $this->organizationTransformer->transform($data);
+
+        if (null === $organization->getId()) {
+            $this->repository->save($organization);
+        }
+
+        return $organization;
     }
 
     public function getOrganizations(array $data): iterable

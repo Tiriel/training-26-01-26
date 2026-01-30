@@ -11,6 +11,7 @@ use App\Search\Interface\ConferenceSearchInterface;
 use App\Search\Provider\ConferenceProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,12 +19,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ConferenceController extends AbstractController
 {
-    #[IsGranted('ROLE_ORGANIZER')]
-    #[IsGranted('ROLE_WEBSITE')]
+    #[IsGranted(new Expression("is_granted('ROLE_ORGANIZER') or is_granted('ROLE_WEBSITE')"))]
     #[Route('/conference/new', name: 'app_conference_new', methods: ['GET', 'POST'])]
-    public function newConference(Request $request, EntityManagerInterface $manager): Response
+    #[Route('/conference/{id}/edit', name: 'app_conference_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function newConference(?Conference $conference, Request $request, EntityManagerInterface $manager): Response
     {
-        $conference = new Conference();
+        $conference ??= new Conference();
         $form = $this->createForm(ConferenceType::class, $conference);
 
         $form->handleRequest($request);
@@ -36,6 +37,7 @@ class ConferenceController extends AbstractController
 
         return $this->render('conference/new.html.twig', [
             'form' => $form,
+            'conference' => $conference,
         ]);
     }
 
