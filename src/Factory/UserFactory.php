@@ -3,6 +3,8 @@
 namespace App\Factory;
 
 use App\Entity\User;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
@@ -15,7 +17,11 @@ final class UserFactory extends PersistentObjectFactory
      *
      * @todo inject services if required
      */
-    public function __construct()
+    public function __construct(
+        private readonly UserPasswordHasherInterface $hasher,
+        #[Autowire(env: 'DEFAULT_PASSWORD')]
+        private readonly string $defaultPassword,
+    )
     {
     }
 
@@ -23,6 +29,18 @@ final class UserFactory extends PersistentObjectFactory
     public static function class(): string
     {
         return User::class;
+    }
+
+    public function email(string $email): static
+    {
+        return $this->with(['email' => $email]);
+    }
+
+    public function roles(array|string $roles): static
+    {
+        $roles = \is_array($roles) ? $roles : [$roles];
+
+        return $this->with(['roles' => $roles]);
     }
 
     /**
@@ -34,9 +52,8 @@ final class UserFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'email' => self::faker()->text(180),
-            'password' => self::faker()->text(),
-            'roles' => [],
+            'email' => self::faker()->email(),
+            'roles' => self::faker()->randomElement(['ROLE_USER', 'ROLE_WEBSITE', 'ROLE_VOLUNTEER']),
         ];
     }
 
@@ -47,7 +64,10 @@ final class UserFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(User $user): void {})
+            ->afterInstantiate(function(User $user): void {
+                $user
+                    ->setPassword($this->hasher->hashPassword($user, $this->defaultPassword));
+            })
         ;
     }
 }

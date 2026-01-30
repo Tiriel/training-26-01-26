@@ -14,9 +14,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ConferenceController extends AbstractController
 {
+    #[IsGranted('ROLE_ORGANIZER')]
+    #[IsGranted('ROLE_WEBSITE')]
     #[Route('/conference/new', name: 'app_conference_new', methods: ['GET', 'POST'])]
     public function newConference(Request $request, EntityManagerInterface $manager): Response
     {

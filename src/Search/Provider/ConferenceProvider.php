@@ -11,6 +11,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireLocator;
 use Symfony\Component\DependencyInjection\Attribute\Lazy;
 use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ConferenceProvider implements ProviderInterface
 {
@@ -20,7 +21,9 @@ class ConferenceProvider implements ProviderInterface
         #[Lazy]
         private readonly EntityManagerInterface $manager,
         #[Lazy]
-        private readonly ApiToConferrenceTransformer $conferrenceTransformer
+        private readonly ApiToConferrenceTransformer $conferrenceTransformer,
+        #[Lazy]
+        private readonly AuthorizationCheckerInterface $checker,
     ) {
     }
 
@@ -49,7 +52,11 @@ class ConferenceProvider implements ProviderInterface
                 $conferences[] = $conference = $this->conferrenceTransformer->transform($apiConference);
                 $this->manager->persist($conference);
             }
-            $this->manager->flush();
+
+            if ($this->checker->isGranted('ROLE_ORGANIZER')
+                    || $this->checker->isGranted('ROLE_WEBSITE')) {
+                $this->manager->flush();
+            }
         }
 
         return $conferences;
