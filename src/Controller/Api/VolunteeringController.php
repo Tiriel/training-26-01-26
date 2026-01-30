@@ -16,9 +16,11 @@ final class VolunteeringController extends AbstractController
     {
         $page = $request->query->getInt('page', 1);
         $volunteerings = $repository->findBy([], [], 10, ($page - 1) * 10);
+        dump($volunteerings);
 
         return $this->json($volunteerings, context:[
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => fn(object $o) => $o->getId(),
+            AbstractNormalizer::GROUPS => ['volunteering:list'],
         ]);
     }
 }
